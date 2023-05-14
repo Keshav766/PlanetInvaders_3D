@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("General setup settings")]
+    [Tooltip("player speed")][SerializeField] float controlSpeed = 20f;
+    [Tooltip("Ship horizontal move limit")][SerializeField] float xRange = 5f;
+    [Tooltip("Ship vertical move limit")][SerializeField] float yRange = 3f;
 
-    [SerializeField] float controlSpeed = 20f;
-    [SerializeField] float xRange = 5f;
-    [SerializeField] float yRange = 3f;
-
+    [Header("Screen position based tuning")]
     [SerializeField] float positionPitchFactor = -2f;
-    [SerializeField] float controlPitchFactor = -10f;
     [SerializeField] float positionYawFactor = -2f;
+
+    [Header("Player input based tuning")]
+    [SerializeField] float controlPitchFactor = -10f;
     [SerializeField] float controlRollFactor = -10f;
+
+    [Header("Player lasers array")]
+    [Tooltip("Add all player lasers")][SerializeField] GameObject[] lasers;
+    [SerializeField] ParticleSystem laserParticlesleft;
+    [SerializeField] ParticleSystem laserParticlesright;
 
     float xThrow, yThrow;
 
@@ -27,6 +35,7 @@ public class PlayerController : MonoBehaviour
     {
         ProcessTranslation();
         ProcessRotation();
+        ProcessFiring();
     }
 
     void ProcessTranslation()
@@ -61,8 +70,41 @@ public class PlayerController : MonoBehaviour
         float yaw = transform.localPosition.x * positionYawFactor;
 
         float roll = xThrow * controlRollFactor;
-        
+
         transform.localRotation = Quaternion.Euler(pitch, yaw, roll);
     }
 
+    void ProcessFiring()
+    {
+        bool fire = Input.GetButton("Jump");
+        if (fire)
+        {
+            SetLasers(true);
+        }
+        else
+        {
+            SetLasers(false);
+        }
+    }
+
+    void SetLasers(bool laserstate)
+    {
+        foreach (GameObject x in lasers)
+        {
+            var emissionModule = x.GetComponent<ParticleSystem>().emission;
+            emissionModule.enabled = laserstate;
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Enemy")
+        {
+            Debug.Log("Enemy collision");
+        }
+        else if(other.tag == "Obstacles")
+        {
+            Debug.Log("Obsticle Collision");
+        }
+    }
 }
