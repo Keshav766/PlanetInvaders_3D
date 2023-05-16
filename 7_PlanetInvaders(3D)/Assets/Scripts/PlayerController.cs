@@ -96,15 +96,5 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "Enemy")
-        {
-            Debug.Log("Enemy collision");
-        }
-        else if(other.tag == "Obstacles")
-        {
-            Debug.Log("Obsticle Collision");
-        }
-    }
+ 
 }
