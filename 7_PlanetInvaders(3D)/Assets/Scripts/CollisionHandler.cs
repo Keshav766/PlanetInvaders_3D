@@ -12,6 +12,11 @@ public class CollisionHandler : MonoBehaviour
         StartCrashSequence();
     }
 
+    void OnCollisionEnter(Collision other)
+    {
+        StartCrashSequence();
+    }
+
     void StartCrashSequence()
     {
         crashParticles.Play();
